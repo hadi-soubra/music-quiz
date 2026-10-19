@@ -1,6 +1,6 @@
 // Cloudflare deploy config: `npm run deploy` builds the app and uploads it as static assets.
 {
-  "name": "composer-quiz",
+  "name": "music-quiz",
   "compatibility_date": "2025-09-01",
   "assets": {
     "directory": "./dist/composer-quiz/browser",
