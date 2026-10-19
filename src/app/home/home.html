@@ -1,0 +1,70 @@
+@let s = settings.settings();
+
+<section class="hero">
+  <h1>Name that composer.</h1>
+  <p>
+    A piece from the exam playlist plays — no title, no video. Guess who wrote it.
+    {{ count() }} pieces · {{ composers.length }} composers.
+  </p>
+</section>
+
+<section class="card setup">
+  <div class="field">
+    <span class="label">What to guess</span>
+    <div class="segmented" role="radiogroup">
+      <button role="radio" [attr.aria-checked]="s.mode === 'composer'" [class.on]="s.mode === 'composer'" (click)="settings.update({ mode: 'composer' })">
+        Composer
+      </button>
+      <button role="radio" [attr.aria-checked]="s.mode === 'piece'" [class.on]="s.mode === 'piece'" (click)="settings.update({ mode: 'piece' })">
+        Piece name
+      </button>
+    </div>
+  </div>
+
+  <div class="field">
+    <span class="label">Start from</span>
+    <div class="segmented" role="radiogroup">
+      <button role="radio" [attr.aria-checked]="s.start === 'random'" [class.on]="s.start === 'random'" (click)="settings.update({ start: 'random' })">
+        Random spot
+      </button>
+      <button role="radio" [attr.aria-checked]="s.start === 'beginning'" [class.on]="s.start === 'beginning'" (click)="settings.update({ start: 'beginning' })">
+        Beginning
+      </button>
+    </div>
+  </div>
+
+  <div class="field">
+    <span class="label">Clip length</span>
+    <div class="segmented" role="radiogroup">
+      @for (opt of snippets; track opt.value) {
+        <button role="radio" [attr.aria-checked]="s.snippet === opt.value" [class.on]="s.snippet === opt.value" (click)="settings.update({ snippet: opt.value })">
+          {{ opt.label }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="field">
+    <span class="label">Composers in the round</span>
+    <div class="chips">
+      @for (c of composers; track c.id) {
+        <button
+          class="chip"
+          [class.on]="s.composers.includes(c.id)"
+          [style.--chip]="c.color"
+          [attr.aria-pressed]="s.composers.includes(c.id)"
+          (click)="settings.toggleComposer(c.id)"
+        >
+          <span class="dot"></span>{{ c.name }} <small>{{ countFor(c.id) }}</small>
+        </button>
+      }
+    </div>
+  </div>
+
+  <a class="btn primary big" routerLink="/quiz">Start · {{ count() }} questions</a>
+</section>
+
+<p class="footnote">
+  Tip: “Random spot” is harder but better practice — your prof might not start at the beginning.
+  Keyboard: <kbd>Space</kbd> play/pause, <kbd>1</kbd>–<kbd>8</kbd> answer, <kbd>Enter</kbd> next.
+</p>

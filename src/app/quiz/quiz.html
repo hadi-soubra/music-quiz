@@ -1,0 +1,143 @@
+@if (!finished()) {
+  @let q = current()!;
+  @let p = picked();
+
+  <div class="status">
+    <span>Question {{ index() + 1 }} / {{ questions().length }}</span>
+    <span class="score">{{ score() }} correct</span>
+  </div>
+  <div class="track-bar"><div [style.width.%]="(index() / questions().length) * 100"></div></div>
+
+  <section class="stage">
+    <button
+      class="disc"
+      [class.spinning]="player.playing() && isCurrentLoaded()"
+      [disabled]="!player.ready()"
+      (mousedown)="$event.preventDefault()"
+      (click)="togglePlay()"
+      [attr.aria-label]="player.playing() && isCurrentLoaded() ? 'Pause' : 'Play'"
+    >
+      <svg viewBox="0 0 120 120" class="ring" aria-hidden="true">
+        <circle cx="60" cy="60" r="54" class="ring-bg" />
+        @if (isCurrentLoaded() && player.limit()) {
+          <circle
+            cx="60" cy="60" r="54" class="ring-fg"
+            [attr.stroke-dasharray]="ringLength"
+            [attr.stroke-dashoffset]="ringLength * (1 - player.progress())"
+          />
+        }
+      </svg>
+      <span class="vinyl" aria-hidden="true"><span class="label"></span></span>
+      <span class="icon" aria-hidden="true">
+        @if (!player.ready() || (player.buffering() && isCurrentLoaded())) {
+          <span class="spinner"></span>
+        } @else if (player.playing() && isCurrentLoaded()) {
+          <svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>
+        } @else {
+          <svg viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" /></svg>
+        }
+      </span>
+    </button>
+
+    <div class="stage-actions">
+      @if (!player.ready()) {
+        <span class="muted">Loading player…</span>
+      } @else if (!isCurrentLoaded()) {
+        <span class="muted">Tap the record to listen</span>
+      } @else {
+        <button class="btn ghost" (mousedown)="$event.preventDefault()" (click)="player.replay()">↺ Replay</button>
+        <button class="btn ghost" (mousedown)="$event.preventDefault()" (click)="playCurrent(true)">⤳ Another spot</button>
+      }
+    </div>
+
+    @if (isCurrentLoaded() && player.error() !== null) {
+      <p class="error">
+        This video won't play here.
+        <a [href]="'https://www.youtube.com/watch?v=' + q.track.videoId" target="_blank" rel="noopener">Open on YouTube</a>
+        (it'll show the title) or just answer to skip.
+      </p>
+    }
+  </section>
+
+  <section class="choices" [class.pieces]="mode === 'piece'">
+    @for (c of q.choices; track c.id; let i = $index) {
+      <button
+        class="choice"
+        [style.--chip]="c.color ?? 'var(--accent)'"
+        [class.correct]="p && c.id === q.answer"
+        [class.wrong]="p === c.id && c.id !== q.answer"
+        [class.dim]="p && c.id !== q.answer && c.id !== p"
+        [disabled]="!!p"
+        (mousedown)="$event.preventDefault()"
+        (click)="answer(c.id)"
+      >
+        <kbd>{{ i + 1 }}</kbd>
+        <span>{{ c.label }}</span>
+      </button>
+    }
+  </section>
+
+  @if (p) {
+    @let composer = composerOf(q.track);
+    <section #reveal class="reveal card" [class.good]="p === q.answer" [style.--chip]="composer.color">
+      <div class="reveal-head">
+        <span class="verdict">{{ p === q.answer ? 'Correct!' : 'Not quite' }}</span>
+        <button class="btn primary" (click)="next()">
+          {{ index() + 1 === questions().length ? 'See results' : 'Next' }} →
+        </button>
+      </div>
+      <div class="reveal-body">
+        <img [src]="'https://i.ytimg.com/vi/' + q.track.videoId + '/mqdefault.jpg'" alt="" loading="lazy" />
+        <div>
+          <div class="composer-name">{{ composer.fullName }}</div>
+          <div class="piece">{{ q.track.title }}</div>
+          <div class="muted small">{{ q.track.performer }} · {{ composer.era }}</div>
+        </div>
+      </div>
+      @if (q.track.tip) {
+        <p class="tip">💡 {{ q.track.tip }}</p>
+      }
+      <p class="hint"><strong>{{ composer.name }}:</strong> {{ composer.hint }}</p>
+      @if (player.limit()) {
+        <button class="btn ghost" (click)="player.unlimit()">Keep listening ♪</button>
+      }
+    </section>
+  }
+} @else {
+  <section class="results">
+    <div class="big-score">
+      <span class="num">{{ score() }}</span><span class="of">/ {{ questions().length }}</span>
+    </div>
+    <p class="verdict-line">{{ percent() }}% — {{ verdict() }}</p>
+
+    <div class="result-actions">
+      @if (missed().length) {
+        <button class="btn primary" (click)="retryMissed()">Retry the {{ missed().length }} missed</button>
+      }
+      <button class="btn" (click)="restart()">Same round again</button>
+      <a class="btn ghost" routerLink="/">Change settings</a>
+    </div>
+
+    @if (missed().length) {
+      <h2>Missed</h2>
+      <ul class="missed">
+        @for (r of missed(); track r.track.id) {
+          @let c = composerOf(r.track);
+          <li [style.--chip]="c.color">
+            <button
+              class="mini-play"
+              (click)="listen(r.track)"
+              [attr.aria-label]="'Play ' + r.track.title"
+            >
+              {{ player.playing() && player.videoId() === r.track.videoId ? '❚❚' : '▶' }}
+            </button>
+            <div>
+              <div><strong>{{ c.name }}</strong> — {{ r.track.title }}</div>
+              <div class="muted small">You said: {{ labelFor(r) }}</div>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+}

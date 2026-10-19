@@ -1,0 +1,40 @@
+<section class="intro">
+  <h1>Study the playlist</h1>
+  <p>Every piece on the exam, grouped by composer, with what to listen for. Tap a piece to play it.</p>
+</section>
+
+@for (g of groups; track g.composer.id) {
+  <section class="composer card" [style.--chip]="g.composer.color">
+    <header>
+      <h2>{{ g.composer.fullName }}</h2>
+      <span class="era">{{ g.composer.era }}</span>
+    </header>
+    <p class="hint">{{ g.composer.hint }}</p>
+    <ul>
+      @for (t of g.tracks; track t.id) {
+        <li [class.active]="player.videoId() === t.videoId">
+          <button class="play" (click)="listen(t)" [attr.aria-label]="(isPlaying(t) ? 'Pause ' : 'Play ') + t.title">
+            @if (player.videoId() === t.videoId && player.buffering()) {
+              <span class="spinner"></span>
+            } @else {
+              {{ isPlaying(t) ? '❚❚' : '▶' }}
+            }
+          </button>
+          <div class="meta">
+            <div class="title">{{ t.title }}</div>
+            <div class="sub">
+              {{ t.performer }}
+              @if (player.videoId() === t.videoId) {
+                · <span class="time">{{ time(player.elapsed()) }} / {{ time(t.duration) }}</span>
+              }
+            </div>
+            @if (t.tip) {
+              <div class="tip">💡 {{ t.tip }}</div>
+            }
+          </div>
+          <a class="yt" [href]="'https://www.youtube.com/watch?v=' + t.videoId" target="_blank" rel="noopener" aria-label="Open on YouTube">↗</a>
+        </li>
+      }
+    </ul>
+  </section>
+}
