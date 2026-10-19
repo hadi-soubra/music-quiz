@@ -1,8 +1,8 @@
 # Who Composed It?
 
-Practice quiz for the music exam: a piece from the playlist plays (title and video hidden) and you guess the composer — or the piece name for a harder mode.
+Practice quiz for the music exam: a piece from the playlist plays (title and video hidden) and you guess the composer.
 
-- **Practice**: pick composer/piece mode, random spot or beginning, 10s/20s/30s/full clips, and which composers to include. Missed pieces can be retried at the end.
+- **Practice**: pick random spot or beginning, 10s/20s/30s/full clips, and which composers to include. Missed pieces can be retried at the end.
 - **Study**: every piece grouped by composer, with listening hints.
 
 Audio comes from embedded YouTube videos; the list lives in [src/app/tracks.ts](src/app/tracks.ts). To swap a recording, change its `videoId` (the part after `watch?v=` in a YouTube URL) and `duration` (seconds).

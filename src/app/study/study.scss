@@ -16,7 +16,6 @@
 
 .composer {
   margin-top: 1rem;
-  border-top: 4px solid var(--chip);
 
   header {
     display: flex;
@@ -106,14 +105,9 @@ li {
   font-weight: 600;
 }
 
-.sub,
-.tip {
+.sub {
   font-size: 0.85rem;
   color: var(--muted);
-}
-
-.tip {
-  margin-top: 0.25rem;
 }
 
 .time {

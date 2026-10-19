@@ -1,12 +1,12 @@
 @if (!finished()) {
-  @let q = current()!;
+  @let t = current()!;
   @let p = picked();
 
   <div class="status">
-    <span>Question {{ index() + 1 }} / {{ questions().length }}</span>
+    <span>Question {{ index() + 1 }} / {{ tracks().length }}</span>
     <span class="score">{{ score() }} correct</span>
   </div>
-  <div class="track-bar"><div [style.width.%]="(index() / questions().length) * 100"></div></div>
+  <div class="track-bar"><div [style.width.%]="(index() / tracks().length) * 100"></div></div>
 
   <section class="stage">
     <button
@@ -53,50 +53,47 @@
     @if (isCurrentLoaded() && player.error() !== null) {
       <p class="error">
         This video won't play here.
-        <a [href]="'https://www.youtube.com/watch?v=' + q.track.videoId" target="_blank" rel="noopener">Open on YouTube</a>
+        <a [href]="'https://www.youtube.com/watch?v=' + t.videoId" target="_blank" rel="noopener">Open on YouTube</a>
         (it'll show the title) or just answer to skip.
       </p>
     }
   </section>
 
-  <section class="choices" [class.pieces]="mode === 'piece'">
-    @for (c of q.choices; track c.id; let i = $index) {
+  <section class="choices">
+    @for (c of composers; track c.id; let i = $index) {
       <button
         class="choice"
-        [style.--chip]="c.color ?? 'var(--accent)'"
-        [class.correct]="p && c.id === q.answer"
-        [class.wrong]="p === c.id && c.id !== q.answer"
-        [class.dim]="p && c.id !== q.answer && c.id !== p"
+        [style.--chip]="c.color"
+        [class.correct]="p && c.id === t.composer"
+        [class.wrong]="p === c.id && c.id !== t.composer"
+        [class.dim]="p && c.id !== t.composer && c.id !== p"
         [disabled]="!!p"
         (mousedown)="$event.preventDefault()"
         (click)="answer(c.id)"
       >
         <kbd>{{ i + 1 }}</kbd>
-        <span>{{ c.label }}</span>
+        <span>{{ c.name }}</span>
       </button>
     }
   </section>
 
   @if (p) {
-    @let composer = composerOf(q.track);
-    <section #reveal class="reveal card" [class.good]="p === q.answer" [style.--chip]="composer.color">
+    @let composer = composerOf(t.composer);
+    <section #reveal class="reveal card" [class.good]="p === t.composer" [style.--chip]="composer.color">
       <div class="reveal-head">
-        <span class="verdict">{{ p === q.answer ? 'Correct!' : 'Not quite' }}</span>
+        <span class="verdict">{{ p === t.composer ? 'Correct!' : 'Not quite' }}</span>
         <button class="btn primary" (click)="next()">
-          {{ index() + 1 === questions().length ? 'See results' : 'Next' }} →
+          {{ index() + 1 === tracks().length ? 'See results' : 'Next' }} →
         </button>
       </div>
       <div class="reveal-body">
-        <img [src]="'https://i.ytimg.com/vi/' + q.track.videoId + '/mqdefault.jpg'" alt="" loading="lazy" />
+        <img [src]="'https://i.ytimg.com/vi/' + t.videoId + '/mqdefault.jpg'" alt="" loading="lazy" />
         <div>
           <div class="composer-name">{{ composer.fullName }}</div>
-          <div class="piece">{{ q.track.title }}</div>
-          <div class="muted small">{{ q.track.performer }} · {{ composer.era }}</div>
+          <div class="piece">{{ t.title }}</div>
+          <div class="muted small">{{ t.performer }} · {{ composer.era }}</div>
         </div>
       </div>
-      @if (q.track.tip) {
-        <p class="tip">💡 {{ q.track.tip }}</p>
-      }
       <p class="hint"><strong>{{ composer.name }}:</strong> {{ composer.hint }}</p>
       @if (player.limit()) {
         <button class="btn ghost" (click)="player.unlimit()">Keep listening ♪</button>
@@ -106,9 +103,9 @@
 } @else {
   <section class="results">
     <div class="big-score">
-      <span class="num">{{ score() }}</span><span class="of">/ {{ questions().length }}</span>
+      <span class="num">{{ score() }}</span><span class="of">/ {{ tracks().length }}</span>
     </div>
-    <p class="verdict-line">{{ percent() }}% — {{ verdict() }}</p>
+    <p class="verdict-line">{{ percent() }}%. {{ verdict() }}</p>
 
     <div class="result-actions">
       @if (missed().length) {
@@ -122,7 +119,7 @@
       <h2>Missed</h2>
       <ul class="missed">
         @for (r of missed(); track r.track.id) {
-          @let c = composerOf(r.track);
+          @let c = composerOf(r.track.composer);
           <li [style.--chip]="c.color">
             <button
               class="mini-play"
@@ -132,8 +129,8 @@
               {{ player.playing() && player.videoId() === r.track.videoId ? '❚❚' : '▶' }}
             </button>
             <div>
-              <div><strong>{{ c.name }}</strong> — {{ r.track.title }}</div>
-              <div class="muted small">You said: {{ labelFor(r) }}</div>
+              <div><strong>{{ c.name }}</strong>: {{ r.track.title }}</div>
+              <div class="muted small">You said: {{ composerOf(r.picked).name }}</div>
             </div>
           </li>
         }

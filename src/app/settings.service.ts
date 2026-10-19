@@ -1,11 +1,9 @@
 import { Injectable, effect, signal } from '@angular/core';
 import { COMPOSERS, ComposerId } from './tracks';
 
-export type QuizMode = 'composer' | 'piece';
 export type StartPoint = 'beginning' | 'random';
 
 export interface Settings {
-  mode: QuizMode;
   start: StartPoint;
   /** Seconds of music per question; 0 = whole piece. */
   snippet: number;
@@ -16,7 +14,6 @@ export interface Settings {
 const KEY = 'composer-quiz-settings';
 
 const DEFAULTS: Settings = {
-  mode: 'composer',
   start: 'random',
   snippet: 20,
   composers: COMPOSERS.map((c) => c.id),
@@ -25,7 +22,16 @@ const DEFAULTS: Settings = {
 function load(): Settings {
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) ?? 'null');
-    return saved ? { ...DEFAULTS, ...saved } : DEFAULTS;
+    if (!saved) return DEFAULTS;
+    // Drop composers that no longer exist in the playlist.
+    const composers = (saved.composers ?? []).filter((id: ComposerId) =>
+      COMPOSERS.some((c) => c.id === id),
+    );
+    return {
+      start: saved.start ?? DEFAULTS.start,
+      snippet: saved.snippet ?? DEFAULTS.snippet,
+      composers: composers.length ? composers : DEFAULTS.composers,
+    };
   } catch {
     return DEFAULTS;
   }
@@ -41,7 +47,7 @@ export class SettingsService {
       try {
         localStorage.setItem(KEY, value);
       } catch {
-        // Storage unavailable (private mode etc.) — settings just won't persist.
+        // Storage unavailable (private mode etc.), so settings just won't persist.
       }
     });
   }

@@ -3,24 +3,12 @@
 <section class="hero">
   <h1>Name that composer.</h1>
   <p>
-    A piece from the exam playlist plays — no title, no video. Guess who wrote it.
+    A piece from the exam playlist plays with no title and no video. Guess who wrote it.
     {{ count() }} pieces · {{ composers.length }} composers.
   </p>
 </section>
 
 <section class="card setup">
-  <div class="field">
-    <span class="label">What to guess</span>
-    <div class="segmented" role="radiogroup">
-      <button role="radio" [attr.aria-checked]="s.mode === 'composer'" [class.on]="s.mode === 'composer'" (click)="settings.update({ mode: 'composer' })">
-        Composer
-      </button>
-      <button role="radio" [attr.aria-checked]="s.mode === 'piece'" [class.on]="s.mode === 'piece'" (click)="settings.update({ mode: 'piece' })">
-        Piece name
-      </button>
-    </div>
-  </div>
-
   <div class="field">
     <span class="label">Start from</span>
     <div class="segmented" role="radiogroup">
@@ -65,6 +53,5 @@
 </section>
 
 <p class="footnote">
-  Tip: “Random spot” is harder but better practice — your prof might not start at the beginning.
-  Keyboard: <kbd>Space</kbd> play/pause, <kbd>1</kbd>–<kbd>8</kbd> answer, <kbd>Enter</kbd> next.
+  Keyboard: <kbd>Space</kbd> play/pause, <kbd>1</kbd> to <kbd>{{ composers.length }}</kbd> answer, <kbd>Enter</kbd> next.
 </p>
