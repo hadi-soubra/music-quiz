@@ -29,7 +29,7 @@ export const COMPOSERS: Composer[] = [
     name: 'Vivaldi',
     fullName: 'Antonio Vivaldi',
     era: 'Baroque · Italy',
-    hint: 'Bright string orchestra with a flashy solo violin, fast repeated notes and harpsichord underneath. Everything on the list is from The Four Seasons, including The Storm, a modern live version of Summer with drums and synths.',
+    hint: 'Bright string orchestra with a flashy solo violin, fast repeated notes and harpsichord underneath. Everything on the list is from The Four Seasons.',
     color: '#4caf7a',
   },
   {
@@ -103,14 +103,6 @@ export const TRACKS: Track[] = [
     performer: 'Nigel Kennedy',
     videoId: 'YuF4oYRktcA',
     duration: 208,
-  },
-  {
-    id: 'vivaldi-storm',
-    title: 'The Storm (Summer, 3rd movement)',
-    composer: 'vivaldi',
-    performer: 'Live concert version',
-    videoId: 'BNi9fOjXx-Y',
-    duration: 201,
   },
   {
     id: 'vivaldi-winter',
