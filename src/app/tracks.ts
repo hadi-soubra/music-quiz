@@ -97,14 +97,6 @@ export const TRACKS: Track[] = [
     duration: 197,
   },
   {
-    id: 'vivaldi-autumn',
-    title: 'The Four Seasons: Autumn, Allegro',
-    composer: 'vivaldi',
-    performer: 'Baroque Festival Orchestra',
-    videoId: '_5YosWFsJVQ',
-    duration: 307,
-  },
-  {
     id: 'vivaldi-summer',
     title: 'The Four Seasons: Summer, 3rd movement',
     composer: 'vivaldi',
