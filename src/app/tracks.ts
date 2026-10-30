@@ -1,4 +1,13 @@
-export type ComposerId = 'vivaldi' | 'bach' | 'handel' | 'beethoven' | 'mozart' | 'chopin' | 'liszt';
+export type ComposerId =
+  | 'vivaldi'
+  | 'bach'
+  | 'handel'
+  | 'beethoven'
+  | 'mozart'
+  | 'chopin'
+  | 'liszt'
+  | 'wagner'
+  | 'tchaikovsky';
 
 export interface Composer {
   id: ComposerId;
@@ -79,6 +88,22 @@ export const COMPOSERS: Composer[] = [
     era: 'Romantic · Hungary',
     hint: 'Solo piano fireworks: insanely fast runs, leaps, and glittering high repeated notes (La Campanella\'s "bell"). Hungarian Rhapsody starts slow and gloomy, then turns into a wild fast dance.',
     color: '#e5487a',
+  },
+  {
+    id: 'wagner',
+    name: 'Wagner',
+    fullName: 'Richard Wagner',
+    era: 'Romantic · Germany',
+    hint: 'Massive orchestra with heavy, blazing brass. Ride of the Valkyries: whirling strings and woodwinds, then the famous galloping tune blasted out by horns and trombones.',
+    color: '#a1887f',
+  },
+  {
+    id: 'tchaikovsky',
+    name: 'Tchaikovsky',
+    fullName: 'Pyotr Ilyich Tchaikovsky',
+    era: 'Romantic · Russia',
+    hint: 'Lush, sweeping melodies and colourful ballet music. The Nutcracker March is light and toy-like; Swan Lake has the haunting oboe theme over trembling strings. June (Barcarolle) is a gentle, sad solo piano song, easy to mistake for Chopin.',
+    color: '#7b6cf0',
   },
 ];
 
@@ -263,5 +288,37 @@ export const TRACKS: Track[] = [
     performer: 'Valentina Lisitsa',
     videoId: 'LdH1hSWGFGU',
     duration: 586,
+  },
+  {
+    id: 'wagner-valkyries',
+    title: 'Ride of the Valkyries',
+    composer: 'wagner',
+    performer: 'London Symphony Orchestra, Yondani Butt',
+    videoId: 'bsJDHukyefA',
+    duration: 284,
+  },
+  {
+    id: 'tchaikovsky-nutcracker-march',
+    title: 'The Nutcracker: March',
+    composer: 'tchaikovsky',
+    performer: 'Simon Rattle, Berliner Philharmoniker',
+    videoId: 'FG6G1VuTTzA',
+    duration: 146,
+  },
+  {
+    id: 'tchaikovsky-june',
+    title: 'The Seasons: June (Barcarolle)',
+    composer: 'tchaikovsky',
+    performer: 'Mikhail Pletnev',
+    videoId: 'qMDNiGM1IdY',
+    duration: 325,
+  },
+  {
+    id: 'tchaikovsky-swan-lake',
+    title: 'Swan Lake, Act 2: No. 10, Scene (Moderato)',
+    composer: 'tchaikovsky',
+    performer: 'André Previn, London Symphony Orchestra',
+    videoId: 'mkfRbCs15Jc',
+    duration: 167,
   },
 ];

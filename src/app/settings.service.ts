@@ -23,10 +23,9 @@ function load(): Settings {
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) ?? 'null');
     if (!saved) return DEFAULTS;
-    // Drop composers that no longer exist in the playlist.
-    const composers = (saved.composers ?? []).filter((id: ComposerId) =>
-      COMPOSERS.some((c) => c.id === id),
-    );
+    // Saved as the composers switched off, so composers added later start switched on.
+    const excluded: ComposerId[] = saved.excluded ?? [];
+    const composers = COMPOSERS.map((c) => c.id).filter((id) => !excluded.includes(id));
     return {
       start: saved.start ?? DEFAULTS.start,
       snippet: saved.snippet ?? DEFAULTS.snippet,
@@ -43,7 +42,9 @@ export class SettingsService {
 
   constructor() {
     effect(() => {
-      const value = JSON.stringify(this.settings());
+      const { start, snippet, composers } = this.settings();
+      const excluded = COMPOSERS.map((c) => c.id).filter((id) => !composers.includes(id));
+      const value = JSON.stringify({ start, snippet, excluded });
       try {
         localStorage.setItem(KEY, value);
       } catch {
