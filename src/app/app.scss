@@ -60,6 +60,10 @@ main {
 }
 
 .banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
   padding: 0.75rem 1rem;
   border-radius: var(--radius);
   background: var(--wrong-bg);

@@ -57,6 +57,8 @@ function loadApi(): Promise<YTNamespace> {
 export class PlayerService {
   readonly ready = signal(false);
   readonly loadFailed = signal(false);
+  /** The player hasn't become ready after a while; usually a slow or blocked connection. */
+  readonly slow = signal(false);
   readonly playing = signal(false);
   readonly buffering = signal(false);
   /** YouTube error code for the current video (100 = removed, 101/150 = embedding blocked). */
@@ -76,6 +78,7 @@ export class PlayerService {
   private timer?: ReturnType<typeof setInterval>;
 
   async attach(el: HTMLElement): Promise<void> {
+    setTimeout(() => this.slow.set(!this.ready()), 15000);
     try {
       const YT = await loadApi();
       this.player = new YT.Player(el, {

@@ -24,4 +24,8 @@ export class App {
   constructor() {
     afterNextRender(() => this.player.attach(this.host().nativeElement));
   }
+
+  protected reload(): void {
+    location.reload();
+  }
 }

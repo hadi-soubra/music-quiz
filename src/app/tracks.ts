@@ -7,7 +7,9 @@ export type ComposerId =
   | 'chopin'
   | 'liszt'
   | 'wagner'
-  | 'tchaikovsky';
+  | 'tchaikovsky'
+  | 'verdi'
+  | 'puccini';
 
 export interface Composer {
   id: ComposerId;
@@ -70,7 +72,7 @@ export const COMPOSERS: Composer[] = [
     name: 'Mozart',
     fullName: 'Wolfgang Amadeus Mozart',
     era: 'Classical · Austria',
-    hint: 'Elegant, clean, balanced phrases that sound "polite" and tuneful. Also opera (Queen of the Night\'s high coloratura) and the dark Requiem (Dies irae).',
+    hint: 'Elegant, clean, balanced phrases that sound "polite" and tuneful. Also opera (Queen of the Night\'s high coloratura) and the Requiem: his Dies irae is fast, tight and driving, without Verdi\'s giant drum hits.',
     color: '#c45bd6',
   },
   {
@@ -104,6 +106,22 @@ export const COMPOSERS: Composer[] = [
     era: 'Romantic · Russia',
     hint: 'Lush, sweeping melodies and colourful ballet music. The Nutcracker March is light and toy-like; Swan Lake has the haunting oboe theme over trembling strings. June (Barcarolle) is a gentle, sad solo piano song, easy to mistake for Chopin.',
     color: '#7b6cf0',
+  },
+  {
+    id: 'verdi',
+    name: 'Verdi',
+    fullName: 'Giuseppe Verdi',
+    era: 'Romantic · Italy',
+    hint: 'Italian opera composer, big and theatrical. His Requiem\'s Dies Irae is pure terror: huge bass drum blows, crashing full orchestra and a screaming choir. Much louder and more violent than Mozart\'s.',
+    color: '#c94a5a',
+  },
+  {
+    id: 'puccini',
+    name: 'Puccini',
+    fullName: 'Giacomo Puccini',
+    era: 'Late Romantic · Italy',
+    hint: 'Italian opera: a solo tenor soaring over a lush orchestra, long emotional melodies that swell to a huge high climax. E lucevan le stelle opens with a sad clarinet solo; Nessun dorma builds to the famous "Vincerò!"',
+    color: '#7fa83a',
   },
 ];
 
@@ -320,5 +338,29 @@ export const TRACKS: Track[] = [
     performer: 'André Previn, London Symphony Orchestra',
     videoId: 'mkfRbCs15Jc',
     duration: 167,
+  },
+  {
+    id: 'verdi-dies-irae',
+    title: 'Requiem: Dies Irae',
+    composer: 'verdi',
+    performer: 'Carmen Giannattasio',
+    videoId: 'bu3Q68qFths',
+    duration: 135,
+  },
+  {
+    id: 'puccini-lucevan',
+    title: 'Tosca, Act 3: E lucevan le stelle',
+    composer: 'puccini',
+    performer: 'Luciano Pavarotti',
+    videoId: 'Zw9vkxcw3vM',
+    duration: 192,
+  },
+  {
+    id: 'puccini-nessun-dorma',
+    title: 'Turandot: Nessun dorma',
+    composer: 'puccini',
+    performer: 'Luciano Pavarotti',
+    videoId: 'IDchaeJ-u6E',
+    duration: 181,
   },
 ];

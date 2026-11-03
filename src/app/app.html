@@ -12,6 +12,11 @@
 <main>
   @if (player.loadFailed()) {
     <p class="banner">Couldn't load the YouTube player. Check your connection or disable any blocker for youtube.com, then reload.</p>
+  } @else if (player.slow() && !player.ready()) {
+    <p class="banner">
+      The YouTube player is taking a long time to load.
+      <button class="btn" (click)="reload()">Reload</button>
+    </p>
   }
   <router-outlet />
 </main>

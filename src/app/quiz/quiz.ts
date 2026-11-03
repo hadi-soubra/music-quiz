@@ -10,6 +10,9 @@ interface Result {
   correct: boolean;
 }
 
+/** Keyboard shortcut for each answer button, in composer order. */
+const KEYS = '1234567890-';
+
 function shuffle<T>(items: T[]): T[] {
   const a = [...items];
   for (let i = a.length - 1; i > 0; i--) {
@@ -32,6 +35,7 @@ export class Quiz {
   private readonly settings = inject(SettingsService).settings();
 
   protected readonly composers = COMPOSERS;
+  protected readonly keys = KEYS;
   protected readonly tracks = signal<Track[]>([]);
   protected readonly index = signal(0);
   protected readonly picked = signal<ComposerId | null>(null);
@@ -135,8 +139,8 @@ export class Quiz {
       this.togglePlay();
     } else if (e.key === 'Enter') {
       this.next();
-    } else if (/^[1-9]$/.test(e.key)) {
-      const composer = COMPOSERS[Number(e.key) - 1];
+    } else {
+      const composer = KEYS.includes(e.key) ? COMPOSERS[KEYS.indexOf(e.key)] : undefined;
       if (composer) this.answer(composer.id);
     }
   }
