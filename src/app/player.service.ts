@@ -81,12 +81,16 @@ export class PlayerService {
     setTimeout(() => this.slow.set(!this.ready()), 15000);
     try {
       const YT = await loadApi();
-      this.player = new YT.Player(el, {
+      // Its methods don't exist until onReady, so only keep a reference from then on.
+      const player = new YT.Player(el, {
         width: '200',
         height: '200',
         playerVars: { playsinline: 1, controls: 0, disablekb: 1, rel: 0, iv_load_policy: 3 },
         events: {
-          onReady: () => this.ready.set(true),
+          onReady: () => {
+            this.player = player;
+            this.ready.set(true);
+          },
           onStateChange: (e) => this.onStateChange(e.data),
           onError: (e) => {
             this.error.set(e.data);

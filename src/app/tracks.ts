@@ -9,7 +9,9 @@ export type ComposerId =
   | 'wagner'
   | 'tchaikovsky'
   | 'verdi'
-  | 'puccini';
+  | 'puccini'
+  | 'rachmaninoff'
+  | 'schubert';
 
 export interface Composer {
   id: ComposerId;
@@ -122,6 +124,22 @@ export const COMPOSERS: Composer[] = [
     era: 'Late Romantic · Italy',
     hint: 'Italian opera: a solo tenor soaring over a lush orchestra, long emotional melodies that swell to a huge high climax. E lucevan le stelle opens with a sad clarinet solo; Nessun dorma builds to the famous "Vincerò!"',
     color: '#7fa83a',
+  },
+  {
+    id: 'rachmaninoff',
+    name: 'Rachmaninoff',
+    fullName: 'Sergei Rachmaninoff',
+    era: 'Late Romantic · Russia',
+    hint: 'Vocalise is a song with no words: a soprano sings one long, slow, melancholy melody on "ah" over piano or orchestra. If a woman is singing and you can\'t hear any words, it\'s Rachmaninoff.',
+    color: '#4f9fd1',
+  },
+  {
+    id: 'schubert',
+    name: 'Schubert',
+    fullName: 'Franz Schubert',
+    era: 'Early Romantic · Austria',
+    hint: 'Gentle art song. Ave Maria is a slow, peaceful prayer over a softly rippling, harp-like accompaniment, and you can hear the words "Ave Maria". Pavarotti sings it too, but unlike his Puccini arias it stays calm and never builds to a huge climax.',
+    color: '#d17a4f',
   },
 ];
 
@@ -362,5 +380,21 @@ export const TRACKS: Track[] = [
     performer: 'Luciano Pavarotti',
     videoId: 'IDchaeJ-u6E',
     duration: 181,
+  },
+  {
+    id: 'rachmaninoff-vocalise',
+    title: 'Vocalise',
+    composer: 'rachmaninoff',
+    performer: 'Dilber (arr. Zhao Peiyi)',
+    videoId: 'PplIUSwn31I',
+    duration: 380,
+  },
+  {
+    id: 'schubert-ave-maria',
+    title: 'Ave Maria, D. 839',
+    composer: 'schubert',
+    performer: 'Luciano Pavarotti, National Philharmonic Orchestra',
+    videoId: 'mAZ_lwJpY4M',
+    duration: 290,
   },
 ];

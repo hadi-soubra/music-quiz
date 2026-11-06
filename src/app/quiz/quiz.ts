@@ -11,7 +11,7 @@ interface Result {
 }
 
 /** Keyboard shortcut for each answer button, in composer order. */
-const KEYS = '1234567890-';
+const KEYS = '1234567890-=q';
 
 function shuffle<T>(items: T[]): T[] {
   const a = [...items];
