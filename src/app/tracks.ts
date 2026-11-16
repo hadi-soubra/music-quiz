@@ -11,7 +11,10 @@ export type ComposerId =
   | 'verdi'
   | 'puccini'
   | 'rachmaninoff'
-  | 'schubert';
+  | 'schubert'
+  | 'ravel'
+  | 'debussy'
+  | 'schoenberg';
 
 export interface Composer {
   id: ComposerId;
@@ -140,6 +143,30 @@ export const COMPOSERS: Composer[] = [
     era: 'Early Romantic · Austria',
     hint: 'Gentle art song. Ave Maria is a slow, peaceful prayer over a softly rippling, harp-like accompaniment, and you can hear the words "Ave Maria". Pavarotti sings it too, but unlike his Puccini arias it stays calm and never builds to a huge climax.',
     color: '#d17a4f',
+  },
+  {
+    id: 'ravel',
+    name: 'Ravel',
+    fullName: 'Maurice Ravel',
+    era: 'Impressionist · France',
+    hint: 'Boléro: one snare drum rhythm repeated nonstop from start to finish while the same Spanish-sounding melody passes from instrument to instrument, growing from almost silent to a huge, crashing ending.',
+    color: '#2f8f5b',
+  },
+  {
+    id: 'debussy',
+    name: 'Debussy',
+    fullName: 'Claude Debussy',
+    era: 'Impressionist · France',
+    hint: 'Dreamy, floating and hazy, with no strong beat. Clair de Lune on harp: soft, shimmering plucked notes, slow and moonlit. A harp playing alone with no singer is Debussy.',
+    color: '#6c8cb8',
+  },
+  {
+    id: 'schoenberg',
+    name: 'Schoenberg',
+    fullName: 'Arnold Schoenberg',
+    era: 'Modern · Austria',
+    hint: 'Atonal and unsettling: no clear key, a spiky small group (flute, clarinet, violin, cello, piano) and a woman half speaking, half singing in German (Sprechstimme). If it sounds creepy and "wrong", it\'s Schoenberg.',
+    color: '#a35fa0',
   },
 ];
 
@@ -396,5 +423,29 @@ export const TRACKS: Track[] = [
     performer: 'Luciano Pavarotti, National Philharmonic Orchestra',
     videoId: 'mAZ_lwJpY4M',
     duration: 290,
+  },
+  {
+    id: 'ravel-bolero',
+    title: 'Boléro',
+    composer: 'ravel',
+    performer: 'West-Eastern Divan Orchestra, BBC Proms 2014',
+    videoId: 's_pSJOkmYBA',
+    duration: 858,
+  },
+  {
+    id: 'debussy-clair-de-lune',
+    title: 'Clair de Lune (harp)',
+    composer: 'debussy',
+    performer: 'Héloïse de Jenlis',
+    videoId: 'vVTPbLhlbfI',
+    duration: 272,
+  },
+  {
+    id: 'schoenberg-pierrot',
+    title: 'Pierrot Lunaire',
+    composer: 'schoenberg',
+    performer: 'Chicago Symphony Orchestra, Beyond the Score',
+    videoId: 'bd2cBUJmDr8',
+    duration: 2294,
   },
 ];
