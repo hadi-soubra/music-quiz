@@ -308,9 +308,9 @@ export const TRACKS: Track[] = [
     id: 'mozart-queen',
     title: 'The Magic Flute: Queen of the Night aria',
     composer: 'mozart',
-    performer: 'Diana Damrau, The Royal Opera',
-    videoId: 'YuBeBjqKSGQ',
-    duration: 181,
+    performer: 'Natalie Dessay',
+    videoId: 'JWGtjmpFcKM',
+    duration: 296,
   },
   {
     id: 'chopin-waltz-am',
