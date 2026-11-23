@@ -2,16 +2,17 @@ import { Component, DestroyRef, ElementRef, computed, effect, inject, signal, vi
 import { RouterLink } from '@angular/router';
 import { PlayerService } from '../player.service';
 import { SettingsService } from '../settings.service';
-import { COMPOSERS, COMPOSER_BY_ID, Composer, ComposerId, TRACKS, Track } from '../tracks';
+import { matchComposer } from '../guess';
+import { COMPOSER_BY_ID, Composer, ComposerId, TRACKS, Track } from '../tracks';
 
 interface Result {
   track: Track;
-  picked: ComposerId;
+  /** What was typed; empty when they gave up. */
+  guess: string;
   correct: boolean;
+  /** Right composer, but not spelled exactly. */
+  misspelled: boolean;
 }
-
-/** Keyboard shortcut for each answer button, in composer order. */
-const KEYS = '1234567890-=qwer';
 
 function shuffle<T>(items: T[]): T[] {
   const a = [...items];
@@ -34,35 +35,44 @@ export class Quiz {
   // Snapshot so changing settings mid-round can't scramble the current round.
   private readonly settings = inject(SettingsService).settings();
 
-  protected readonly composers = COMPOSERS;
-  protected readonly keys = KEYS;
   protected readonly tracks = signal<Track[]>([]);
   protected readonly index = signal(0);
-  protected readonly picked = signal<ComposerId | null>(null);
+  protected readonly guess = signal('');
+  /** The current question's result, once answered. */
+  protected readonly answered = signal<Result | null>(null);
   protected readonly results = signal<Result[]>([]);
 
   protected readonly current = computed<Track | undefined>(() => this.tracks()[this.index()]);
   protected readonly finished = computed(() => this.index() >= this.tracks().length);
   protected readonly score = computed(() => this.results().filter((r) => r.correct).length);
   protected readonly missed = computed(() => this.results().filter((r) => !r.correct));
+  protected readonly misspelled = computed(() => this.results().filter((r) => r.misspelled));
   protected readonly isCurrentLoaded = computed(
     () => !!this.current() && this.player.videoId() === this.current()!.videoId,
   );
   protected readonly ringLength = 2 * Math.PI * 54;
   private readonly reveal = viewChild<ElementRef<HTMLElement>>('reveal');
+  private readonly box = viewChild<ElementRef<HTMLInputElement>>('box');
 
   constructor() {
     this.newRound(TRACKS.filter((t) => this.settings.composers.includes(t.composer)));
     inject(DestroyRef).onDestroy(() => this.player.stop());
     // On phones the answer card lands below the fold, so bring it into view.
     effect(() => this.reveal()?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' }));
+    // Ready to type on each question. Skipped on touch screens, where the keyboard would cover the record.
+    const canType = matchMedia('(pointer: fine)').matches;
+    effect(() => {
+      this.index();
+      if (canType) this.box()?.nativeElement.focus({ preventScroll: true });
+    });
   }
 
   protected newRound(tracks: Track[]): void {
     this.player.stop();
     this.tracks.set(shuffle(tracks));
     this.index.set(0);
-    this.picked.set(null);
+    this.guess.set('');
+    this.answered.set(null);
     this.results.set([]);
   }
 
@@ -89,19 +99,30 @@ export class Quiz {
     const length = this.settings.snippet;
     const latest = Math.max(0, track.duration - (length || 30) - 3);
     const start = randomSpot ? Math.floor(3 + Math.random() * Math.max(0, latest - 3)) : 0;
-    this.player.play(track.videoId, Math.min(start, latest), this.picked() ? 0 : length);
+    this.player.play(track.videoId, Math.min(start, latest), this.answered() ? 0 : length);
   }
 
-  protected answer(id: ComposerId): void {
+  protected onSubmit(e: Event): void {
+    e.preventDefault();
+    const guess = this.guess().trim();
+    if (guess) this.answer(guess);
+  }
+
+  /** Record the answer for the current question; an empty guess means "don't know". */
+  protected answer(guess: string): void {
     const track = this.current();
-    if (!track || this.picked()) return;
-    this.picked.set(id);
-    this.results.update((r) => [...r, { track, picked: id, correct: id === track.composer }]);
+    if (!track || this.answered()) return;
+    const match = guess ? matchComposer(guess) : null;
+    const correct = match?.composer === track.composer;
+    const result = { track, guess, correct, misspelled: correct && match!.misspelled };
+    this.answered.set(result);
+    this.results.update((r) => [...r, result]);
   }
 
   protected next(): void {
-    if (!this.picked()) return;
-    this.picked.set(null);
+    if (!this.answered()) return;
+    this.answered.set(null);
+    this.guess.set('');
     this.index.update((i) => i + 1);
     if (this.finished()) this.player.stop();
     else this.playCurrent();
@@ -133,15 +154,23 @@ export class Quiz {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     // Let a keyboard-focused button handle its own Space/Enter.
     if (e.target instanceof HTMLButtonElement && (e.key === ' ' || e.key === 'Enter')) return;
+    const box = this.box()?.nativeElement;
+    const typing = !!box && e.target === box;
 
-    if (e.key === ' ') {
+    if (e.key === 'Enter') {
+      // Before answering, Enter in the box submits the form instead.
+      if (this.answered()) {
+        e.preventDefault();
+        this.next();
+      }
+    } else if (e.key === ' ') {
+      // Space types normally once a name is started; a leading space is never needed.
+      if (typing && this.guess() && !this.answered()) return;
       e.preventDefault();
       this.togglePlay();
-    } else if (e.key === 'Enter') {
-      this.next();
-    } else {
-      const composer = KEYS.includes(e.key) ? COMPOSERS[KEYS.indexOf(e.key)] : undefined;
-      if (composer) this.answer(composer.id);
+    } else if (!typing && box && !this.answered() && e.key.length === 1) {
+      // Start typing from anywhere on the page.
+      box.focus({ preventScroll: true });
     }
   }
 }

@@ -1,6 +1,6 @@
 @if (!finished()) {
   @let t = current()!;
-  @let p = picked();
+  @let a = answered();
 
   <div class="status">
     <span>Question {{ index() + 1 }} / {{ tracks().length }}</span>
@@ -59,29 +59,45 @@
     }
   </section>
 
-  <section class="choices">
-    @for (c of composers; track c.id; let i = $index) {
-      <button
-        class="choice"
-        [style.--chip]="c.color"
-        [class.correct]="p && c.id === t.composer"
-        [class.wrong]="p === c.id && c.id !== t.composer"
-        [class.dim]="p && c.id !== t.composer && c.id !== p"
-        [disabled]="!!p"
-        (mousedown)="$event.preventDefault()"
-        (click)="answer(c.id)"
-      >
-        <kbd>{{ keys[i] }}</kbd>
-        <span>{{ c.name }}</span>
+  <form class="answer" (submit)="onSubmit($event)">
+    <label class="answer-label" for="guess">Composer</label>
+    <div class="answer-row">
+      <input
+        #box
+        id="guess"
+        type="text"
+        placeholder="Type the composer's name"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="words"
+        spellcheck="false"
+        enterkeyhint="done"
+        [class.correct]="a?.correct"
+        [class.wrong]="a && !a.correct"
+        [readOnly]="!!a"
+        [value]="guess()"
+        (input)="guess.set(box.value)"
+      />
+      @if (!a) {
+        <button class="btn primary" type="submit" [disabled]="!guess().trim()" (mousedown)="$event.preventDefault()">
+          Check
+        </button>
+      }
+    </div>
+    @if (!a) {
+      <button class="link" type="button" (mousedown)="$event.preventDefault()" (click)="answer('')">
+        I don't know
       </button>
+    } @else if (a.misspelled) {
+      <p class="answer-note">Counted, but it's spelled <strong>{{ composerOf(t.composer).name }}</strong>.</p>
     }
-  </section>
+  </form>
 
-  @if (p) {
+  @if (a) {
     @let composer = composerOf(t.composer);
-    <section #reveal class="reveal card" [class.good]="p === t.composer" [style.--chip]="composer.color">
+    <section #reveal class="reveal card" [class.good]="a.correct" [style.--chip]="composer.color">
       <div class="reveal-head">
-        <span class="verdict">{{ p === t.composer ? 'Correct!' : 'Not quite' }}</span>
+        <span class="verdict">{{ a.correct ? 'Correct!' : a.guess ? 'Not quite' : 'The answer' }}</span>
         <button class="btn primary" (click)="next()">
           {{ index() + 1 === tracks().length ? 'See results' : 'Next' }} →
         </button>
@@ -130,7 +146,22 @@
             </button>
             <div>
               <div><strong>{{ c.name }}</strong>: {{ r.track.title }}</div>
-              <div class="muted small">You said: {{ composerOf(r.picked).name }}</div>
+              <div class="muted small">{{ r.guess ? 'You wrote: ' + r.guess : 'No answer' }}</div>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+
+    @if (misspelled().length) {
+      <h2>Check the spelling</h2>
+      <ul class="missed">
+        @for (r of misspelled(); track r.track.id) {
+          @let c = composerOf(r.track.composer);
+          <li [style.--chip]="c.color">
+            <div>
+              <div><s class="muted">{{ r.guess }}</s> → <strong>{{ c.name }}</strong></div>
+              <div class="muted small">{{ r.track.title }}</div>
             </div>
           </li>
         }
