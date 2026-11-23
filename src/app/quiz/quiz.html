@@ -76,20 +76,24 @@
         [class.wrong]="a && !a.correct"
         [readOnly]="!!a"
         [value]="guess()"
-        (input)="guess.set(box.value)"
+        (input)="onInput(box.value)"
       />
-      @if (!a) {
+      @if (!a && !suggestion()) {
         <button class="btn primary" type="submit" [disabled]="!guess().trim()" (mousedown)="$event.preventDefault()">
           Check
         </button>
       }
     </div>
-    @if (!a) {
+    @if (suggestion(); as s) {
+      <div class="suggest">
+        <span>Did you mean <strong>{{ composerOf(s).name }}</strong>?</span>
+        <button class="btn primary" type="submit" (mousedown)="$event.preventDefault()">Yes</button>
+        <button class="btn" type="button" (mousedown)="$event.preventDefault()" (click)="rejectSuggestion()">No</button>
+      </div>
+    } @else if (!a) {
       <button class="link" type="button" (mousedown)="$event.preventDefault()" (click)="answer('')">
         I don't know
       </button>
-    } @else if (a.misspelled) {
-      <p class="answer-note">Counted, but it's spelled <strong>{{ composerOf(t.composer).name }}</strong>.</p>
     }
   </form>
 
@@ -147,21 +151,6 @@
             <div>
               <div><strong>{{ c.name }}</strong>: {{ r.track.title }}</div>
               <div class="muted small">{{ r.guess ? 'You wrote: ' + r.guess : 'No answer' }}</div>
-            </div>
-          </li>
-        }
-      </ul>
-    }
-
-    @if (misspelled().length) {
-      <h2>Check the spelling</h2>
-      <ul class="missed">
-        @for (r of misspelled(); track r.track.id) {
-          @let c = composerOf(r.track.composer);
-          <li [style.--chip]="c.color">
-            <div>
-              <div><s class="muted">{{ r.guess }}</s> → <strong>{{ c.name }}</strong></div>
-              <div class="muted small">{{ r.track.title }}</div>
             </div>
           </li>
         }

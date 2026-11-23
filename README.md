@@ -1,6 +1,6 @@
 # Who Composed It?
 
-Practice quiz for the music exam: a piece from the playlist plays (title and video hidden) and you guess the composer.
+Practice quiz for the music exam: a piece from the playlist plays (title and video hidden) and you type the composer's name, like on the exam. Spelling isn't graded, so a misspelled name gets a "Did you mean …?" with the closest composer; the matching and extra accepted spellings (Rachmaninov, Händel…) live in [src/app/guess.ts](src/app/guess.ts).
 
 - **Practice**: pick random spot or beginning, 10s/20s/30s/full clips, and which composers to include. Missed pieces can be retried at the end.
 - **Study**: every piece grouped by composer, with listening hints.

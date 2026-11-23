@@ -7,11 +7,9 @@ import { COMPOSER_BY_ID, Composer, ComposerId, TRACKS, Track } from '../tracks';
 
 interface Result {
   track: Track;
-  /** What was typed; empty when they gave up. */
+  /** The answer given; empty when they gave up. */
   guess: string;
   correct: boolean;
-  /** Right composer, but not spelled exactly. */
-  misspelled: boolean;
 }
 
 function shuffle<T>(items: T[]): T[] {
@@ -38,6 +36,8 @@ export class Quiz {
   protected readonly tracks = signal<Track[]>([]);
   protected readonly index = signal(0);
   protected readonly guess = signal('');
+  /** Closest composer to a misspelled guess, offered as "Did you mean…?". */
+  protected readonly suggestion = signal<ComposerId | null>(null);
   /** The current question's result, once answered. */
   protected readonly answered = signal<Result | null>(null);
   protected readonly results = signal<Result[]>([]);
@@ -46,7 +46,6 @@ export class Quiz {
   protected readonly finished = computed(() => this.index() >= this.tracks().length);
   protected readonly score = computed(() => this.results().filter((r) => r.correct).length);
   protected readonly missed = computed(() => this.results().filter((r) => !r.correct));
-  protected readonly misspelled = computed(() => this.results().filter((r) => r.misspelled));
   protected readonly isCurrentLoaded = computed(
     () => !!this.current() && this.player.videoId() === this.current()!.videoId,
   );
@@ -72,6 +71,7 @@ export class Quiz {
     this.tracks.set(shuffle(tracks));
     this.index.set(0);
     this.guess.set('');
+    this.suggestion.set(null);
     this.answered.set(null);
     this.results.set([]);
   }
@@ -102,19 +102,36 @@ export class Quiz {
     this.player.play(track.videoId, Math.min(start, latest), this.answered() ? 0 : length);
   }
 
+  protected onInput(value: string): void {
+    this.guess.set(value);
+    this.suggestion.set(null);
+  }
+
+  /** Check the typed name, or accept the pending "Did you mean…?" suggestion. */
   protected onSubmit(e: Event): void {
     e.preventDefault();
+    const suggested = this.suggestion();
+    if (suggested) return this.answer(COMPOSER_BY_ID[suggested].name);
     const guess = this.guess().trim();
-    if (guess) this.answer(guess);
+    if (!guess) return;
+    const match = matchComposer(guess);
+    if (match?.misspelled) this.suggestion.set(match.composer);
+    else this.answer(guess);
+  }
+
+  /** "No" to the suggestion: back to the box to fix the spelling. */
+  protected rejectSuggestion(): void {
+    this.suggestion.set(null);
+    this.box()?.nativeElement.focus();
   }
 
   /** Record the answer for the current question; an empty guess means "don't know". */
   protected answer(guess: string): void {
     const track = this.current();
     if (!track || this.answered()) return;
-    const match = guess ? matchComposer(guess) : null;
-    const correct = match?.composer === track.composer;
-    const result = { track, guess, correct, misspelled: correct && match!.misspelled };
+    this.suggestion.set(null);
+    this.guess.set(guess);
+    const result = { track, guess, correct: !!guess && matchComposer(guess)?.composer === track.composer };
     this.answered.set(result);
     this.results.update((r) => [...r, result]);
   }

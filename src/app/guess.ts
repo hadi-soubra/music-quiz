@@ -2,7 +2,7 @@ import { COMPOSERS, ComposerId } from './tracks';
 
 export interface Match {
   composer: ComposerId;
-  /** Recognized, but not spelled exactly like an accepted spelling. */
+  /** Closest name, but not spelled like an accepted spelling: worth a "Did you mean…?". */
   misspelled: boolean;
 }
 
@@ -48,15 +48,16 @@ function distance(a: string, b: string): number {
   return d[a.length][b.length];
 }
 
-/** Short names must be exact; longer ones forgive one or two slips. */
+/** How far off a word can be and still be suggested: roughly a third of the name. */
 function slipsAllowed(name: string): number {
-  return name.length >= 8 ? 2 : name.length >= 5 ? 1 : 0;
+  return name.length >= 8 ? 3 : name.length >= 5 ? 2 : 1;
 }
 
 /**
  * Work out which composer a typed answer means. Any word of the answer can carry the
- * surname, so "Bach", "J.S. Bach" and "Johann Sebastian Bach" all work. Returns null
- * when nothing is close enough, or when two composers are equally close.
+ * surname, so "Bach", "J.S. Bach" and "Johann Sebastian Bach" all work, and "Mozert"
+ * comes back as a misspelled Mozart. Returns null when nothing is close enough, or when
+ * two composers are equally close.
  */
 export function matchComposer(answer: string): Match | null {
   const typed = words(answer);
