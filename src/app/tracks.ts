@@ -177,7 +177,7 @@ export const COMPOSERS: Composer[] = [
     name: 'Withers',
     fullName: 'Bill Withers',
     era: 'Soul · USA',
-    hint: 'Ain\'t No Sunshine: a short, quiet song with acoustic guitar and soft strings, and a warm, aching male voice. Easy giveaway: "I know, I know, I know..." repeated over and over in the middle.',
+    hint: 'Ain\'t No Sunshine, played here as smooth jazz: a mellow saxophone carries the sad, bluesy melody over a laid-back groove, with no singing. Bill Withers wrote and first sang it.',
     color: '#c08a3e',
   },
   {
@@ -488,9 +488,9 @@ export const TRACKS: Track[] = [
     id: 'withers-sunshine',
     title: 'Ain\'t No Sunshine (When She\'s Gone)',
     composer: 'withers',
-    performer: 'Bill Withers',
-    videoId: 'YuKfiH0Scao',
-    duration: 126,
+    performer: 'Dr. SaxLove (saxophone version)',
+    videoId: 'hIz-0U8Uuls',
+    duration: 262,
   },
   {
     id: 'armstrong-wonderful-world',
