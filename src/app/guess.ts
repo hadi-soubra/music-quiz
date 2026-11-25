@@ -15,6 +15,8 @@ const ALSO_ACCEPTED: Partial<Record<ComposerId, string[]>> = {
   tchaikovsky: ['tchaikovski', 'tschaikowsky', 'tchaikowsky', 'chaikovsky'],
   rachmaninoff: ['rachmaninov'],
   schoenberg: ['schonberg'],
+  // The exam list credits Rhapsody in Blue to Leonard Bernstein, who performs it.
+  gershwin: ['bernstein'],
 };
 
 const SPELLINGS = COMPOSERS.map((c) => ({

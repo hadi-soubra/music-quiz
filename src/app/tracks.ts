@@ -14,7 +14,11 @@ export type ComposerId =
   | 'schubert'
   | 'ravel'
   | 'debussy'
-  | 'schoenberg';
+  | 'schoenberg'
+  | 'withers'
+  | 'armstrong'
+  | 'gershwin'
+  | 'sinatra';
 
 export interface Composer {
   id: ComposerId;
@@ -167,6 +171,38 @@ export const COMPOSERS: Composer[] = [
     era: 'Modern · Austria',
     hint: 'Atonal and unsettling: no clear key, a spiky small group (flute, clarinet, violin, cello, piano) and a woman half speaking, half singing in German (Sprechstimme). If it sounds creepy and "wrong", it\'s Schoenberg.',
     color: '#a35fa0',
+  },
+  {
+    id: 'withers',
+    name: 'Withers',
+    fullName: 'Bill Withers',
+    era: 'Soul · USA',
+    hint: 'Ain\'t No Sunshine: a short, quiet song with acoustic guitar and soft strings, and a warm, aching male voice. Easy giveaway: "I know, I know, I know..." repeated over and over in the middle.',
+    color: '#c08a3e',
+  },
+  {
+    id: 'armstrong',
+    name: 'Armstrong',
+    fullName: 'Louis Armstrong',
+    era: 'Jazz · USA',
+    hint: 'What a Wonderful World: an unmistakable gravelly, raspy voice singing slowly and warmly over gentle strings ("I see trees of green..."). Written by Bob Thiele and George David Weiss, but known as Armstrong\'s song.',
+    color: '#5e7ad1',
+  },
+  {
+    id: 'gershwin',
+    name: 'Gershwin',
+    fullName: 'George Gershwin',
+    era: 'Jazz · USA',
+    hint: 'Rhapsody in Blue mixes jazz and classical (white jazz, also called symphonic jazz). It opens with a famous clarinet that slides up into the theme, then piano and full orchestra trade bluesy, swinging tunes. Your list credits Leonard Bernstein, who plays the piano and conducts this recording, so "Bernstein" counts too.',
+    color: '#3f6fb5',
+  },
+  {
+    id: 'sinatra',
+    name: 'Sinatra',
+    fullName: 'Frank Sinatra',
+    era: 'Jazz · USA',
+    hint: 'Fly Me to the Moon: a smooth, relaxed crooner over a swinging big band (Count Basie\'s orchestra) with punchy brass and a walking bass. Written by Bart Howard, but known as Sinatra\'s song.',
+    color: '#b5503f',
   },
 ];
 
@@ -447,5 +483,37 @@ export const TRACKS: Track[] = [
     performer: 'Chicago Symphony Orchestra, Beyond the Score',
     videoId: 'bd2cBUJmDr8',
     duration: 2294,
+  },
+  {
+    id: 'withers-sunshine',
+    title: 'Ain\'t No Sunshine (When She\'s Gone)',
+    composer: 'withers',
+    performer: 'Bill Withers',
+    videoId: 'YuKfiH0Scao',
+    duration: 126,
+  },
+  {
+    id: 'armstrong-wonderful-world',
+    title: 'What a Wonderful World',
+    composer: 'armstrong',
+    performer: 'Louis Armstrong',
+    videoId: 'rBrd_3VMC3c',
+    duration: 139,
+  },
+  {
+    id: 'gershwin-rhapsody',
+    title: 'Rhapsody in Blue',
+    composer: 'gershwin',
+    performer: 'Leonard Bernstein, Columbia Symphony Orchestra',
+    videoId: '4jVh5cZ_ZvM',
+    duration: 988,
+  },
+  {
+    id: 'sinatra-fly-me',
+    title: 'Fly Me to the Moon',
+    composer: 'sinatra',
+    performer: 'Frank Sinatra, Count Basie Orchestra',
+    videoId: 'JYuyWrkwpok',
+    duration: 147,
   },
 ];
